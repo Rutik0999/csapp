@@ -1,6 +1,6 @@
-package com.csapp.cloudcode.entities;
+package com.csapp.cloudcode.pyaloads;
 
-import jakarta.persistence.*;
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,25 +8,19 @@ import lombok.Setter;
 
 import java.util.UUID;
 
-@Entity
-@Table(name="customer")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Customer {
+public class CustomerDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @Nullable
     private String customerId;
 
-    @Column(name="customer_name")
     private String customerName;
 
-    @Column(unique = true)
     private String customerEmail;
     private String password;
     private String address;
     private String about;
-
 }

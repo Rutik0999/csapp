@@ -4,6 +4,10 @@ import com.csapp.cloudcode.entities.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Repository
-public interface Customerrepo extends JpaRepository<Customer, Integer> {
+public interface CustomerRepo extends JpaRepository<Customer, String> {
+    Optional<Customer> findByCustomerEmail(String customerEmail);
 }
