@@ -21,9 +21,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerDto createCustomer(CustomerDto customerDto) {
         Optional<Customer> customer = this.customerRepo.findByCustomerEmail(customerDto.getCustomerEmail());
-        if(customer.isPresent()){
+        if (customer.isPresent()) {
             return null;
-        }else{
+        } else {
             Customer customerObj = this.dtoToCustomer(customerDto);
             Customer savedCustomer = this.customerRepo.save(customerObj);
             return this.customerToDto(savedCustomer);
@@ -50,20 +50,39 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDto getCustomerById(String customerId) {
-        return null;
+        Customer customer = this.customerRepo.findById(customerId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Customer",
+                        customerId,
+                        "Not available in db"
+                ));
+        return this.customerToDto(customer);
     }
 
     @Override
     public List<CustomerDto> getAllCustomer() {
-        return List.of();
+        List<Customer> listofCustomer = this.customerRepo.findAll();
+        List<CustomerDto> listOfCustomerDto = listofCustomer.stream()
+                .map((Customer customer) -> this
+                        .customerToDto(customer)).toList();
+
+        return listOfCustomerDto;
     }
 
     @Override
     public void deleteCustomerById(String customerId) {
+        Customer customer = this.customerRepo.findById(customerId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Customer",
+                        customerId,
+                        "Not found"
+                ));
 
+        this.customerRepo.delete(customer);
     }
 
-    public CustomerDto customerToDto(Customer customer){
+
+    public CustomerDto customerToDto(Customer customer) {
         CustomerDto customerDto = new CustomerDto();
         customerDto.setCustomerId(customer.getCustomerId());
         customerDto.setCustomerEmail(customer.getCustomerEmail());
@@ -73,7 +92,8 @@ public class CustomerServiceImpl implements CustomerService {
         customerDto.setAddress(customer.getAddress());
         return customerDto;
     }
-    public Customer dtoToCustomer(CustomerDto customerDto){
+
+    public Customer dtoToCustomer(CustomerDto customerDto) {
         Customer customer = new Customer();
         customer.setCustomerId(customerDto.getCustomerId());
         customer.setCustomerEmail(customerDto.getCustomerEmail());
