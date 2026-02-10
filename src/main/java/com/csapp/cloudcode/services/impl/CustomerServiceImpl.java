@@ -138,6 +138,7 @@ public class CustomerServiceImpl implements CustomerService {
         issueDto.setCreatedAt(issue.getCreatedAt());
         issueDto.setUpdatedAt(issue.getUpdatedAt());
         issueDto.setStatus(issue.getStatus());
+        issueDto.setCustomerId(issue.getCustomer().getCustomerId());
 
         return issueDto;
     }
