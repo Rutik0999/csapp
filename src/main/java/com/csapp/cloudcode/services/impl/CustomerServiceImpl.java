@@ -1,13 +1,16 @@
 package com.csapp.cloudcode.services.impl;
 
 import com.csapp.cloudcode.entities.Customer;
+import com.csapp.cloudcode.entities.Issue;
 import com.csapp.cloudcode.exception.ResourceNotFoundException;
 import com.csapp.cloudcode.pyaloads.CustomerDto;
+import com.csapp.cloudcode.pyaloads.IssueDto;
 import com.csapp.cloudcode.repo.CustomerRepo;
 import com.csapp.cloudcode.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -90,6 +93,9 @@ public class CustomerServiceImpl implements CustomerService {
         customerDto.setAbout(customer.getAbout());
         customerDto.setPassword(customer.getPassword());
         customerDto.setAddress(customer.getAddress());
+        List<IssueDto> listOfIssueDto = customer.getListOfIssue()
+                .stream().map(this::issueToDto).toList();
+        customerDto.setListOfIssueDto(listOfIssueDto);
         return customerDto;
     }
 
@@ -101,7 +107,39 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setAbout(customerDto.getAbout());
         customer.setPassword(customerDto.getPassword());
         customer.setAddress(customerDto.getAddress());
+        List<Issue> listOfIssue = customerDto.getListOfIssueDto()
+                .stream().map(issueDto-> {
+                    Issue issue = this.dtoToIssue(issueDto);
+                    issue.setCustomer(customer);
+                    return issue;
+                }).toList();
+        customer.setListOfIssue(listOfIssue);
+
         return customer;
+    }
+
+    public Issue dtoToIssue(IssueDto issueDto){
+        Issue issue = new Issue();
+        issue.setIssueId(issueDto.getIssueId());
+        issue.setIssueDescription(issueDto.getIssueDescription());
+        issue.setIssueTitle(issueDto.getIssueTitle());
+        issue.setCreatedAt(issueDto.getCreatedAt());
+        issue.setUpdatedAt(LocalDateTime.now());
+        issue.setStatus(issueDto.getStatus());
+
+        return issue;
+    }
+
+    public IssueDto issueToDto (Issue issue){
+        IssueDto issueDto = new IssueDto();
+        issueDto.setIssueId(issue.getIssueId());
+        issueDto.setIssueDescription(issue.getIssueDescription());
+        issueDto.setIssueTitle(issue.getIssueTitle());
+        issueDto.setCreatedAt(issue.getCreatedAt());
+        issueDto.setUpdatedAt(issue.getUpdatedAt());
+        issueDto.setStatus(issue.getStatus());
+
+        return issueDto;
     }
 
 }
