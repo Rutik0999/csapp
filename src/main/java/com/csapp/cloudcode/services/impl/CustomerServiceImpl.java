@@ -2,9 +2,11 @@ package com.csapp.cloudcode.services.impl;
 
 import com.csapp.cloudcode.entities.Customer;
 import com.csapp.cloudcode.entities.Issue;
+import com.csapp.cloudcode.entities.Tag;
 import com.csapp.cloudcode.exception.ResourceNotFoundException;
 import com.csapp.cloudcode.pyaloads.CustomerDto;
 import com.csapp.cloudcode.pyaloads.IssueDto;
+import com.csapp.cloudcode.pyaloads.TagDto;
 import com.csapp.cloudcode.repo.CustomerRepo;
 import com.csapp.cloudcode.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -126,6 +130,14 @@ public class CustomerServiceImpl implements CustomerService {
         issue.setCreatedAt(issueDto.getCreatedAt());
         issue.setUpdatedAt(LocalDateTime.now());
         issue.setStatus(issueDto.getStatus());
+        if (issueDto.getTags()!=null){
+            Set<Tag> tags = issueDto.getTags()
+                    .stream()
+                    .map(this::dtoToTag)
+                    .collect(Collectors.toSet());
+
+            issue.setTags(tags);
+        }
 
         return issue;
     }
@@ -139,8 +151,33 @@ public class CustomerServiceImpl implements CustomerService {
         issueDto.setUpdatedAt(issue.getUpdatedAt());
         issueDto.setStatus(issue.getStatus());
         issueDto.setCustomerId(issue.getCustomer().getCustomerId());
+        if (issue.getTags()!=null){
+            Set<TagDto> tagDtos = issue.getTags()
+                    .stream()
+                    .map(this::tagToDto)
+                    .collect(Collectors.toSet());
+
+            issueDto.setTags(tagDtos);
+        }
+
 
         return issueDto;
+    }
+
+    public TagDto tagToDto(Tag tag){
+
+        TagDto dto = new TagDto();
+        dto.setTagId(tag.getTagId());
+        dto.setTagTitle(tag.getTagTitle());
+        dto.setTagDescription(tag.getTagDescription());
+        return dto;
+    }
+    public Tag dtoToTag(TagDto dto){
+        Tag tag = new Tag();
+        tag.setTagId(dto.getTagId());
+        tag.setTagTitle(dto.getTagTitle());
+        tag.setTagDescription(dto.getTagDescription());
+        return tag;
     }
 
 }

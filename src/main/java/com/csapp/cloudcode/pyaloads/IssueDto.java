@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -28,5 +30,7 @@ public class IssueDto {
     private String status;
 
     private String customerId;
+
+    private Set<TagDto> tags = new HashSet<>();
 }
 
