@@ -124,7 +124,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     public Issue dtoToIssue(IssueDto issueDto){
         Issue issue = new Issue();
-        issue.setIssueId(issueDto.getIssueId());
+        issue.setIssueId(UUID.fromString(issueDto.getIssueId()));
         issue.setIssueDescription(issueDto.getIssueDescription());
         issue.setIssueTitle(issueDto.getIssueTitle());
         issue.setCreatedAt(issueDto.getCreatedAt());
@@ -144,7 +144,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     public IssueDto issueToDto (Issue issue){
         IssueDto issueDto = new IssueDto();
-        issueDto.setIssueId(issue.getIssueId());
+        issueDto.setIssueId(String.valueOf(issue.getIssueId()));
         issueDto.setIssueDescription(issue.getIssueDescription());
         issueDto.setIssueTitle(issue.getIssueTitle());
         issueDto.setCreatedAt(issue.getCreatedAt());
